@@ -14,14 +14,15 @@ For detailed information on each part of the project, please refer to the specif
 - Simple API in Django
 - React frontend based on [Figma design](https://www.figma.com/design/0OQWLQmU14SF2cDhHPJ2sx/CodeLeap-Engineering-Test?node-id=29005-174&t=Wnog5ZpVKz3tGjvX-0)
 - Animations
-- Login and Signup
+- Login and Logout
 - Create, Read, Update and Delete posts
 - Custom Hooks
 - Pagination with Infinite Scroll
 - Responsive design
 - dynamic post sorting by date and username
+- Search functionality for posts with debounce
 
 ## Screenshots
 
-![Main Screen Login](./.github/Screenshot%20From%202026-04-24%2014-48-20.png)
-![Main Screen Dashboard](./.github/Screenshot%20From%202026-04-24%2014-49-04.png)
+![Main Screen Login](./.github/desktop.png)
+![Main Screen Dashboard](./.github/responsive.png)
