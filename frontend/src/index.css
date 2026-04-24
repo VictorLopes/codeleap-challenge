@@ -1,0 +1,79 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+:root {
+  --primary-color: #7695ec;
+  --secondary-color: #ffffff;
+  --error-color: #ff5151;
+  --success-color: #47b960;
+  --bg-color: #dddddd;
+  --text-color: #000000;
+  --text-secondary: #777777;
+  --border-color: #cccccc;
+  --header-bg: #7695ec;
+  --card-bg: #ffffff;
+  --font-family: 'Inter', sans-serif;
+  --radius: 8px;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --modal-bg: rgba(0, 0, 0, 0.5);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: var(--font-family);
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radius);
+  font-weight: 700;
+  transition: all 0.3s ease;
+}
+
+button:disabled {
+  background-color: var(--border-color);
+  cursor: not-allowed;
+}
+
+input {
+  outline: none;
+  border: 1px solid var(--text-secondary);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+input:focus {
+  border-color: var(--primary-color);
+}
+
+/* Base utility for layouts */
+.container {
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  background-color: var(--card-bg);
+  min-height: 100vh;
+  box-shadow: var(--shadow);
+}
+
+@media (max-width: 800px) {
+  .container {
+    width: 100%;
+  }
+}
