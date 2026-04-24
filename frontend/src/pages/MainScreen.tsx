@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Input, Button, PostCard, Modal } from '../components';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth, useCareers } from '../hooks';
+import styles from './MainScreen.module.scss';
+
 
 const MainScreen: React.FC = () => {
   const { username, logout } = useAuth();
@@ -75,17 +78,18 @@ const MainScreen: React.FC = () => {
   return (
     <div className="container">
       <Modal isOpen={isDeleteModalOpen}>
-        <h2 style={{ fontSize: '22px', fontWeight: '700', marginBottom: '40px' }}>
+        <h2 className={styles.modalTitle}>
           Are you sure you want to delete this item?
         </h2>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
+        <div className={styles.modalActions}>
           <Button variant="cancel" onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
-          <Button variant="error" style={{ backgroundColor: '#ff5151', color: 'white' }} onClick={handleDelete}>Delete</Button>
+          <Button variant="error" onClick={handleDelete}>Delete</Button>
         </div>
       </Modal>
 
+
       <Modal isOpen={isEditModalOpen}>
-        <h2 style={{ fontSize: '22px', fontWeight: '700', marginBottom: '24px' }}>
+        <h2 className={styles.modalTitle}>
           Edit item
         </h2>
         <Input
@@ -99,47 +103,30 @@ const MainScreen: React.FC = () => {
           value={editContent}
           onChange={(e) => setEditContent(e.target.value)}
         />
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '16px' }}>
+        <div className={styles.modalActions}>
           <Button variant="cancel" onClick={() => setIsEditModalOpen(false)}>Cancel</Button>
           <Button variant="success" disabled={!editTitle.trim() || !editContent.trim()} onClick={handleSaveEdit}>Save</Button>
         </div>
       </Modal>
 
-      <header style={{
-        backgroundColor: '#7695ec',
-        padding: '24px 38px',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        color: '#ffffff'
-      }}>
-        <h1 style={{ fontSize: '22px', fontWeight: '700' }}>CodeLeap Network</h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <span>Welcome, <strong>{username}</strong>!</span>
+      <header className={styles.header}>
+        <h1 className={styles.title}>CodeLeap Network</h1>
+        <div className={styles.userNav}>
+          <span className={styles.username}>
+            Welcome, <strong>{username}</strong>!
+          </span>
           <button
             onClick={logout}
-            style={{
-              background: 'transparent',
-              color: 'white',
-              border: '1px solid white',
-              padding: '4px 12px',
-              fontSize: '12px'
-            }}
+            className={styles.logoutButton}
           >
             Logout
           </button>
         </div>
       </header>
 
-      <main style={{ padding: '24px' }}>
-        <section style={{
-          border: '1px solid #999999',
-          borderRadius: '16px',
-          padding: '24px',
-          backgroundColor: '#ffffff',
-          marginBottom: '24px'
-        }}>
-          <h2 style={{ fontSize: '22px', fontWeight: '700', marginBottom: '24px' }}>
+      <main className={styles.mainContent}>
+        <section className={styles.createPostSection}>
+          <h2 className={styles.sectionTitle}>
             What's on your mind?
           </h2>
           <Input
@@ -155,7 +142,7 @@ const MainScreen: React.FC = () => {
             value={content}
             onChange={(e) => setContent(e.target.value)}
           />
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+          <div className={styles.buttonContainer}>
             <Button
               variant="primary"
               disabled={!title.trim() || !content.trim()}
@@ -167,27 +154,34 @@ const MainScreen: React.FC = () => {
         </section>
 
         <section>
-          {loading && <p style={{ textAlign: 'center' }}>Loading posts...</p>}
-          {error && <p style={{ textAlign: 'center', color: '#ff5151' }}>{error}</p>}
-          {!loading && !error && posts.length === 0 && <p style={{ textAlign: 'center' }}>No posts yet. Be the first to share something!</p>}
-          {posts?.map?.((post, index) => (
-            <div
-              key={post.id!}
-              ref={index === posts.length - 1 ? lastPostElementRef : null}
-            >
-              <PostCard
-                username={post.username}
-                created_datetime={post.created_datetime!}
-                title={post.title}
-                content={post.content}
-                onEdit={() => handleOpenEditModal(post)}
-                onDelete={() => handleOpenDeleteModal(post.id!)}
-              />
-            </div>
-          ))}
-          {loadingMore && <p style={{ textAlign: 'center', margin: '20px 0' }}>Loading more...</p>}
+          {loading && <p className={styles.statusMessage}>Loading posts...</p>}
+          {error && <p className={styles.errorMessage}>{error}</p>}
+          {!loading && !error && posts.length === 0 && <p className={styles.statusMessage}>No posts yet. Be the first to share something!</p>}
+          <AnimatePresence initial={false}>
+            {posts?.map?.((post, index) => (
+              <motion.div
+                key={post.id!}
+                ref={index === posts.length - 1 ? lastPostElementRef : null}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, x: 50, transition: { duration: 0.2 } }}
+                layout
+              >
+                <PostCard
+                  username={post.username}
+                  created_datetime={post.created_datetime!}
+                  title={post.title}
+                  content={post.content}
+                  onEdit={() => handleOpenEditModal(post)}
+                  onDelete={() => handleOpenDeleteModal(post.id!)}
+                />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+          {loadingMore && <p className={styles.statusMessage}>Loading more...</p>}
         </section>
       </main>
+
     </div>
   );
 };

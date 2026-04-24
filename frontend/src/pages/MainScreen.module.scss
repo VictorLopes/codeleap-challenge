@@ -1,0 +1,152 @@
+.header {
+  background-color: var(--primary-color);
+  padding: 24px 38px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--secondary-color);
+  width: 100%;
+  transition: all 0.3s ease;
+
+  @media (max-width: 600px) {
+    padding: 16px 20px;
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 700;
+
+  @media (max-width: 600px) {
+    font-size: 18px;
+  }
+}
+
+.userNav {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+
+  @media (max-width: 600px) {
+    width: 100%;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  @media (max-width: 400px) {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+.username {
+  span {
+    font-weight: 400;
+  }
+
+  strong {
+    font-weight: 700;
+  }
+
+  @media (max-width: 400px) {
+    font-size: 14px;
+  }
+}
+
+.logoutButton {
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 4px 16px;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  @media (max-width: 600px) {
+    padding: 6px 20px;
+  }
+}
+
+.mainContent {
+  padding: 24px;
+
+  @media (max-width: 600px) {
+    padding: 16px;
+  }
+}
+
+.createPostSection {
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 24px;
+  background-color: var(--card-bg);
+  margin-bottom: 24px;
+
+  @media (max-width: 600px) {
+    padding: 16px;
+  }
+}
+
+.sectionTitle {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 24px;
+
+  @media (max-width: 600px) {
+    font-size: 18px;
+    margin-bottom: 16px;
+  }
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.statusMessage {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.errorMessage {
+  text-align: center;
+  color: var(--error-color);
+  margin: 20px 0;
+}
+
+.modalTitle {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 24px;
+
+  @media (max-width: 600px) {
+    font-size: 18px;
+  }
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+
+  @media (max-width: 400px) {
+    flex-direction: column-reverse;
+    gap: 8px;
+
+    button {
+      width: 100%;
+    }
+  }
+}
