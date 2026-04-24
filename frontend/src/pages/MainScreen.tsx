@@ -1,28 +1,20 @@
 import React, { useState } from 'react';
 import { Input, Button, PostCard, Modal } from '../components';
-import { useAuth } from '../hooks';
+import { useAuth, useCareers } from '../hooks';
 
 const MainScreen: React.FC = () => {
   const { username, logout } = useAuth();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
 
-  const [posts, setPosts] = useState([
-    {
-      id: 1,
-      username: 'victor',
-      created_datetime: new Date().toISOString(),
-      title: 'My first post',
-      content: 'Hello CodeLeap network! This is a test post.'
-    },
-    {
-      id: 2,
-      username: 'codeleap',
-      created_datetime: new Date(Date.now() - 3600000).toISOString(),
-      title: 'Welcome!',
-      content: 'We are happy to have you here.'
-    }
-  ]);
+  const {
+    posts,
+    loading,
+    error,
+    createPost,
+    updatePost,
+    deletePost
+  } = useCareers();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -30,43 +22,52 @@ const MainScreen: React.FC = () => {
   const [editTitle, setEditTitle] = useState('');
   const [editContent, setEditContent] = useState('');
 
-  const handleCreatePost = () => {
-    if (title.trim() && content.trim()) {
-      const newPost = {
-        id: Date.now(),
-        username: username,
-        created_datetime: new Date().toISOString(),
-        title,
-        content
-      };
-      setPosts([newPost, ...posts]);
-      setTitle('');
-      setContent('');
+  const handleCreatePost = async () => {
+    if (title.trim() && content.trim() && username) {
+      try {
+        await createPost(username, title, content);
+        setTitle('');
+        setContent('');
+      } catch (err: any) {
+        alert(err.message);
+      }
     }
   };
 
-  const openDeleteModal = (id: number) => {
+  const handleOpenDeleteModal = (id: number) => {
     setSelectedPostId(id);
     setIsDeleteModalOpen(true);
   };
 
-  const openEditModal = (post: any) => {
+  const handleOpenEditModal = (post: any) => {
     setSelectedPostId(post.id);
     setEditTitle(post.title);
     setEditContent(post.content);
     setIsEditModalOpen(true);
   };
 
-  const handleDelete = () => {
-    setPosts(posts.filter(p => p.id !== selectedPostId));
-    setIsDeleteModalOpen(false);
-    setSelectedPostId(null);
+  const handleDelete = async () => {
+    if (selectedPostId) {
+      try {
+        await deletePost(selectedPostId);
+        setIsDeleteModalOpen(false);
+        setSelectedPostId(null);
+      } catch (err: any) {
+        alert(err.message);
+      }
+    }
   };
 
-  const handleSaveEdit = () => {
-    setPosts(posts.map(p => p.id === selectedPostId ? { ...p, title: editTitle, content: editContent } : p));
-    setIsEditModalOpen(false);
-    setSelectedPostId(null);
+  const handleSaveEdit = async () => {
+    if (selectedPostId) {
+      try {
+        await updatePost(selectedPostId, editTitle, editContent);
+        setIsEditModalOpen(false);
+        setSelectedPostId(null);
+      } catch (err: any) {
+        alert(err.message);
+      }
+    }
   };
 
   return (
@@ -164,12 +165,18 @@ const MainScreen: React.FC = () => {
         </section>
 
         <section>
-          {posts.map(post => (
+          {loading && <p style={{ textAlign: 'center' }}>Loading posts...</p>}
+          {error && <p style={{ textAlign: 'center', color: '#ff5151' }}>{error}</p>}
+          {!loading && !error && posts.length === 0 && <p style={{ textAlign: 'center' }}>No posts yet. Be the first to share something!</p>}
+          {posts?.map?.(post => (
             <PostCard
-              key={post.id}
-              {...post}
-              onEdit={() => openEditModal(post)}
-              onDelete={() => openDeleteModal(post.id)}
+              key={post.id!}
+              username={post.username}
+              created_datetime={post.created_datetime!}
+              title={post.title}
+              content={post.content}
+              onEdit={() => handleOpenEditModal(post)}
+              onDelete={() => handleOpenDeleteModal(post.id!)}
             />
           ))}
         </section>

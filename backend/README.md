@@ -6,7 +6,14 @@ This is the backend project for the CodeLeap challenge, built using Django and D
 
 ### 1. Setting Up the Virtual Environment (.venv)
 
-The project uses a virtual environment (`.venv`) to manage dependencies in isolation. Since the `.venv` folder is already present in the project, follow the steps below to activate it:
+The project uses a virtual environment (`.venv`) to manage dependencies in isolation. 
+
+```bash
+python -m venv ./.venv
+```
+
+
+Since the `.venv` folder is already present in the project, follow the steps below to activate it:
 
 **On Linux/macOS:**
 ```bash
