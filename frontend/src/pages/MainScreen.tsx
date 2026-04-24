@@ -10,10 +10,12 @@ const MainScreen: React.FC = () => {
   const {
     posts,
     loading,
+    loadingMore,
     error,
     createPost,
     updatePost,
-    deletePost
+    deletePost,
+    lastPostElementRef
   } = useCareers();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -168,17 +170,22 @@ const MainScreen: React.FC = () => {
           {loading && <p style={{ textAlign: 'center' }}>Loading posts...</p>}
           {error && <p style={{ textAlign: 'center', color: '#ff5151' }}>{error}</p>}
           {!loading && !error && posts.length === 0 && <p style={{ textAlign: 'center' }}>No posts yet. Be the first to share something!</p>}
-          {posts?.map?.(post => (
-            <PostCard
+          {posts?.map?.((post, index) => (
+            <div
               key={post.id!}
-              username={post.username}
-              created_datetime={post.created_datetime!}
-              title={post.title}
-              content={post.content}
-              onEdit={() => handleOpenEditModal(post)}
-              onDelete={() => handleOpenDeleteModal(post.id!)}
-            />
+              ref={index === posts.length - 1 ? lastPostElementRef : null}
+            >
+              <PostCard
+                username={post.username}
+                created_datetime={post.created_datetime!}
+                title={post.title}
+                content={post.content}
+                onEdit={() => handleOpenEditModal(post)}
+                onDelete={() => handleOpenDeleteModal(post.id!)}
+              />
+            </div>
           ))}
+          {loadingMore && <p style={{ textAlign: 'center', margin: '20px 0' }}>Loading more...</p>}
         </section>
       </main>
     </div>

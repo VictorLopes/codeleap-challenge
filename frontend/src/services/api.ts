@@ -8,12 +8,18 @@ export interface CareerData {
   content: string;
 }
 
+export interface CareerResponse {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: CareerData[];
+}
+
 export const api = {
-  getPosts: async (): Promise<CareerData[]> => {
-    const response = await fetch(BASE_URL);
+  getPosts: async (url?: string): Promise<CareerResponse> => {
+    const response = await fetch(url ?? BASE_URL);
     if (!response.ok) throw new Error('Failed to fetch posts');
-    const data = await response.json();
-    return data;
+    return response.json();
   },
 
   createPost: async (post: CareerData): Promise<CareerData> => {

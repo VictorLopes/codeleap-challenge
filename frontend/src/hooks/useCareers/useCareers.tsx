@@ -1,28 +1,61 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { api, type CareerData } from '../../services/api';
 
 export const useCareers = () => {
   const [posts, setPosts] = useState<CareerData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const [nextPage, setNextPage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchPosts = useCallback(async () => {
+  const fetchPosts = useCallback(async (isInitial = true) => {
     try {
-      setLoading(true);
-      const data = await api.getPosts();
-      setPosts(data);
+      if (isInitial) {
+        setLoading(true);
+      } else {
+        setLoadingMore(true);
+      }
+
+      const response = await api.getPosts(isInitial ? undefined : (nextPage ?? undefined));
+      
+      if (isInitial) {
+        setPosts(response.results);
+      } else {
+        setPosts(prev => [...prev, ...response.results]);
+      }
+      
+      setNextPage(response.next);
       setError(null);
     } catch (err) {
       setError('Failed to load posts');
       console.error(err);
     } finally {
       setLoading(false);
+      setLoadingMore(false);
     }
-  }, []);
+  }, [nextPage]);
 
   useEffect(() => {
-    fetchPosts();
-  }, [fetchPosts]);
+    fetchPosts(true);
+  }, []);
+
+  const fetchMore = useCallback(() => {
+    if (nextPage && !loadingMore) {
+      fetchPosts(false);
+    }
+  }, [nextPage, loadingMore, fetchPosts]);
+
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastPostElementRef = useCallback((node: HTMLDivElement | null) => {
+    if (loading || loadingMore) return;
+    if (observer.current) observer.current.disconnect();
+    observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting && !!nextPage) {
+        fetchMore();
+      }
+    });
+    if (node) observer.current.observe(node);
+  }, [loading, loadingMore, nextPage, fetchMore]);
 
   const createPost = async (username: string, title: string, content: string) => {
     try {
@@ -63,8 +96,12 @@ export const useCareers = () => {
   return {
     posts,
     loading,
+    loadingMore,
+    hasMore: !!nextPage,
     error,
-    refreshPosts: fetchPosts,
+    refreshPosts: () => fetchPosts(true),
+    fetchMore,
+    lastPostElementRef,
     createPost,
     updatePost,
     deletePost
