@@ -18,7 +18,9 @@ const MainScreen: React.FC = () => {
     createPost,
     updatePost,
     deletePost,
-    lastPostElementRef
+    lastPostElementRef,
+    ordering,
+    setOrdering
   } = useCareers();
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -154,6 +156,21 @@ const MainScreen: React.FC = () => {
         </section>
 
         <section>
+          <div className={styles.sortingContainer}>
+            <label htmlFor="sorting">Sort by:</label>
+            <select
+              id="sorting"
+              value={ordering}
+              onChange={(e) => setOrdering(e.target.value)}
+              className={styles.select}
+            >
+              <option value="-created_datetime">Newest First</option>
+              <option value="created_datetime">Oldest First</option>
+              <option value="username">Username (A-Z)</option>
+              <option value="-username">Username (Z-A)</option>
+              <option value="title">Title (A-Z)</option>
+            </select>
+          </div>
           {loading && <p className={styles.statusMessage}>Loading posts...</p>}
           {error && <p className={styles.errorMessage}>{error}</p>}
           {!loading && !error && posts.length === 0 && <p className={styles.statusMessage}>No posts yet. Be the first to share something!</p>}

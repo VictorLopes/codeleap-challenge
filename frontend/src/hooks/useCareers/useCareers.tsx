@@ -7,6 +7,7 @@ export const useCareers = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [nextPage, setNextPage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [ordering, setOrdering] = useState<string>('-created_datetime');
 
   const fetchPosts = useCallback(async (isInitial = true) => {
     try {
@@ -16,7 +17,7 @@ export const useCareers = () => {
         setLoadingMore(true);
       }
 
-      const response = await api.getPosts(isInitial ? undefined : (nextPage ?? undefined));
+      const response = await api.getPosts(isInitial ? undefined : (nextPage ?? undefined), ordering);
       
       if (isInitial) {
         setPosts(response.results);
@@ -33,11 +34,11 @@ export const useCareers = () => {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, [nextPage]);
+  }, [nextPage, ordering]);
 
   useEffect(() => {
     fetchPosts(true);
-  }, []);
+  }, [ordering]);
 
   const fetchMore = useCallback(() => {
     if (nextPage && !loadingMore) {
@@ -104,6 +105,8 @@ export const useCareers = () => {
     lastPostElementRef,
     createPost,
     updatePost,
-    deletePost
+    deletePost,
+    ordering,
+    setOrdering
   };
 };

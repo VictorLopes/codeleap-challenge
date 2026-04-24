@@ -16,8 +16,12 @@ export interface CareerResponse {
 }
 
 export const api = {
-  getPosts: async (url?: string): Promise<CareerResponse> => {
-    const response = await fetch(url ?? BASE_URL);
+  getPosts: async (url?: string, ordering?: string): Promise<CareerResponse> => {
+    let finalUrl = url ?? BASE_URL;
+    if (!url && ordering) {
+      finalUrl += `?ordering=${ordering}`;
+    }
+    const response = await fetch(finalUrl);
     if (!response.ok) throw new Error('Failed to fetch posts');
     return response.json();
   },
