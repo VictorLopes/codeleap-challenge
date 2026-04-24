@@ -8,6 +8,7 @@ export const useCareers = () => {
   const [nextPage, setNextPage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [ordering, setOrdering] = useState<string>('-created_datetime');
+  const [search, setSearch] = useState<string>('');
 
   const fetchPosts = useCallback(async (isInitial = true) => {
     try {
@@ -17,7 +18,7 @@ export const useCareers = () => {
         setLoadingMore(true);
       }
 
-      const response = await api.getPosts(isInitial ? undefined : (nextPage ?? undefined), ordering);
+      const response = await api.getPosts(isInitial ? undefined : (nextPage ?? undefined), ordering, search);
       
       if (isInitial) {
         setPosts(response.results);
@@ -34,11 +35,15 @@ export const useCareers = () => {
       setLoading(false);
       setLoadingMore(false);
     }
-  }, [nextPage, ordering]);
+  }, [nextPage, ordering, search]);
 
   useEffect(() => {
-    fetchPosts(true);
-  }, [ordering]);
+    const handler = setTimeout(() => {
+      fetchPosts(true);
+    }, search ? 500 : 0);
+
+    return () => clearTimeout(handler);
+  }, [ordering, search]);
 
   const fetchMore = useCallback(() => {
     if (nextPage && !loadingMore) {
@@ -107,6 +112,8 @@ export const useCareers = () => {
     updatePost,
     deletePost,
     ordering,
-    setOrdering
+    setOrdering,
+    search,
+    setSearch
   };
 };

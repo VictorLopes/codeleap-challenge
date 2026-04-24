@@ -19,6 +19,7 @@ For detailed information on each part of the project, please refer to the specif
 - Custom Hooks
 - Pagination with Infinite Scroll
 - Responsive design
+- dynamic post sorting by date and username
 
 ## Screenshots
 

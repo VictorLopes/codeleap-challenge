@@ -16,10 +16,14 @@ export interface CareerResponse {
 }
 
 export const api = {
-  getPosts: async (url?: string, ordering?: string): Promise<CareerResponse> => {
+  getPosts: async (url?: string, ordering?: string, search?: string): Promise<CareerResponse> => {
     let finalUrl = url ?? BASE_URL;
-    if (!url && ordering) {
-      finalUrl += `?ordering=${ordering}`;
+    if (!url) {
+      const params = new URLSearchParams();
+      if (ordering) params.append('ordering', ordering);
+      if (search) params.append('search', search);
+      const queryString = params.toString();
+      if (queryString) finalUrl += `?${queryString}`;
     }
     const response = await fetch(finalUrl);
     if (!response.ok) throw new Error('Failed to fetch posts');
